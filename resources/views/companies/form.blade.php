@@ -6,10 +6,24 @@
     <div class="card-header">
         <h3 class="card-title">Add Companies</h3>
     </div>
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{session('success')}}
+    </div>
+    @elseif ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
     <!-- /.card-header -->
     <!-- form start -->
-    <form role="form">
-        <div class="card-body">
+    <form action="{{route("company.store")}}" method="POST" role="form" enctype="multipart/form-data">
+
+        <div class=" card-body">
             <div class="form-group">
                 <label for="exampleInputEmail1">Name</label>
                 <input type="text" name="name" class="form-control" id="exampleInputEmail1" placeholder="Ex : Yoga Anugrah Pratama">
@@ -33,7 +47,7 @@
 
         </div>
         <!-- /.card-body -->
-
+        @csrf
         <div class="card-footer">
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>

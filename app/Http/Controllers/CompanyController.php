@@ -2,13 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Company;
 use Illuminate\Http\Request;
 use yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\CompanyStoreRequest;
+use App\Mail\NewCompanyNotification;
+use Illuminate\Support\Facades\Mail;
 
 
 class CompanyController extends Controller
 {
+
+
+    public function __construct()
+    {
+        $this->db = app('db');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +27,8 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        return view('company.index');
+        $companies = Company::paginate(10);
+        return view('companies.index', ['companies' => $companies]);
     }
 
     /**
@@ -26,7 +38,7 @@ class CompanyController extends Controller
      */
     public function create()
     {
-        return view('company.form');
+        return view('companies.form');
     }
 
     /**
@@ -35,9 +47,36 @@ class CompanyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CompanyStoreRequest  $request)
     {
-        //
+        $this->db->beginTransaction();
+        try {
+            $request->validated();
+            $storageName;
+            if ($request->hasFile('logo')) {
+                $storagePath = Storage::disk('local')->put('public/images', $request->file('logo'));
+                $storageName = basename($storagePath);
+            }
+
+            $company = new Company;
+
+            $company->name = $request->input('name');
+            $company->email = $request->input('email');
+            $company->logo = $storageName;
+
+            $company->save();
+
+            Mail::to('testera330@gmail.com')->send(new NewCompanyNotification(['name' => $request->input('name')]));
+
+            $this->db->commit();
+            $message = "Company berhasil di input";
+            return redirect()->route('company.create')->withSuccess($message);
+        } catch (Exception $exception) {
+            $this->db->rollback();
+            $message = $exception->getMessage();
+
+            return redirect()->route('company.create')->withErrors($message);
+        }
     }
 
     /**

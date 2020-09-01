@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+
+
 class CompanyStoreRequest extends FormRequest
 {
     /**
@@ -13,7 +15,7 @@ class CompanyStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +26,23 @@ class CompanyStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => 'required|string|max:50',
+            'email' => 'required|email|unique:companies',
+            'logo' => 'required|min:100',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'email.required' => 'Email is required!',
+            'email.email' => 'Invalid Format!',
+            'email.unique' => 'Email Sudah ada!',
+            'name.required' => 'Name is required!',
+            'name.max' => 'Nama anda terlalu panjang!',
+            'name.string' => 'Harus String!',
+            'logo.required' => 'Logo is required!',
+            'logo.min' => 'Min file 100x100!',
         ];
     }
 }
