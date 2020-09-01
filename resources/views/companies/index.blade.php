@@ -6,12 +6,12 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>DataTables</h1>
+                <h1>List Company</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">DataTables</li>
+                    <li class="breadcrumb-item active">List Company</li>
                 </ol>
             </div>
         </div>
@@ -24,7 +24,14 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">DataTable with minimal features & hover style</h3>
+
+                    <div class="col-md-3">
+                        <a href="{{route("company.create")}}" class="btn btn-primary"><i class="fas fa-edit"> Tambah</i></a>
+                    </div>
+                    <div class="col-md-9">
+
+                    </div>
+
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -40,8 +47,9 @@
                             </tr>
                         </thead>
                         <tbody>
+
                             <?php $i = 1; ?>
-                            @foreach($companies as $company)
+                            @forelse($companies as $company)
                             <tr>
 
                                 <td>{{$i++}}</td>
@@ -50,15 +58,31 @@
                                 <td>{{$company->email}}</td>
                                 <td><img src="{{ asset('storage/images/'.$company->logo)}}" alt="" width="70px" height="60px"></td>
                                 <td>{{$company->created_at}}</td>
-                                <td>tes</td>
+                                <td>
+                                    <a href="{{route("company.show", [$company->id])}}" class="btn btn-block bg-gradient-success"><i class="fas fa-edit"> Show</i></a>
+                                    <a href="{{route("company.edit", [$company->id])}}" class="btn btn-block bg-gradient-primary"><i class="fas fa-edit"> Edit</i></a>
+
+                                    <form onsubmit="return confirm('Delete this company permanently?')" action="{{route('company.destroy', [$company->id])}}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-block bg-gradient-danger "><i class="fas fa-trash"> Delete</i></button>
+                                    </form>
+
+                                </td>
                             </tr>
-                            @endforeach
-
+                            @empty
+                            <p>No Data Company</p>
+                            @endforelse
                         </tbody>
-
+                        <tfoot>
+                            <tr>
+                                <td colspan="6">
+                                    {!! $companies->appends(Request::all())->links() !!}
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
-                </div>
-                <!-- /.card-body -->
+                </div> <!-- /.card-body -->
             </div>
             <!-- /.card -->
 

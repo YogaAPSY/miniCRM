@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Company;
 use Illuminate\Http\Request;
-use yajra\DataTables\DataTables;
-use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\CompanyStoreRequest;
+
 use App\Mail\NewCompanyNotification;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\CompanyEditRequest;
+use App\Http\Requests\CompanyStoreRequest;
 
 
 class CompanyController extends Controller
@@ -52,7 +53,7 @@ class CompanyController extends Controller
         $this->db->beginTransaction();
         try {
             $request->validated();
-            $storageName;
+            $storageName = "";
             if ($request->hasFile('logo')) {
                 $storagePath = Storage::disk('local')->put('public/images', $request->file('logo'));
                 $storageName = basename($storagePath);
@@ -70,7 +71,7 @@ class CompanyController extends Controller
 
             $this->db->commit();
             $message = "Company berhasil di input";
-            return redirect()->route('company.create')->withSuccess($message);
+            return redirect()->route('company.index')->withSuccess($message);
         } catch (Exception $exception) {
             $this->db->rollback();
             $message = $exception->getMessage();
@@ -85,9 +86,10 @@ class CompanyController extends Controller
      * @param  \App\Company  $company
      * @return \Illuminate\Http\Response
      */
-    public function show(Company $company)
+    public function show($id)
     {
-        //
+        $companies = Company::findOrFail($id);
+        return view('companies.index', ['companies' => $companies]);
     }
 
     /**
@@ -96,9 +98,10 @@ class CompanyController extends Controller
      * @param  \App\Company  $company
      * @return \Illuminate\Http\Response
      */
-    public function edit(Company $company)
+    public function edit($id)
     {
-        // return view('company.form');
+        $companies = Company::findOrFail($id);
+        return view('companies.form', ['companies' => $companies]);
     }
 
     /**
@@ -108,8 +111,38 @@ class CompanyController extends Controller
      * @param  \App\Company  $company
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Company $company)
+    public function update(CompanyEditRequest $request, $id)
     {
+        $this->db->beginTransaction();
+        try {
+            $request->validated();
+            $storageName = "";
+
+            $company = Company::findOrFail($id);
+            if ($request->hasFile('logo')) {
+                Storage::delete('public/images/' . $company->logo);
+
+                $storagePath = Storage::disk('local')->put('public/images', $request->file('logo'));
+                $storageName = basename($storagePath);
+            }
+
+            $company->name = $request->input('name');
+            $company->email = $request->input('email');
+            $company->logo = $storageName;
+
+            $company->save();
+
+            Mail::to('testera330@gmail.com')->send(new NewCompanyNotification(['name' => $request->input('name')]));
+
+            $this->db->commit();
+            $message = "Company berhasil di input";
+            return redirect()->route('company.index')->withSuccess($message);
+        } catch (Exception $exception) {
+            $this->db->rollback();
+            $message = $exception->getMessage();
+
+            return redirect()->route('company.create')->withErrors($message);
+        }
     }
 
     /**
@@ -118,8 +151,28 @@ class CompanyController extends Controller
      * @param  \App\Company  $company
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Company $company)
+    public function destroy($id)
     {
-        //
+        try {
+            $companies = Company::find($id);
+            $companies->delete();
+
+            Storage::delete('public/images' . $companies->logo);
+            //     $file = $request->file('avatar')->store('avatars', 'public');
+            //     $user->avatar = $file;
+            if ($companies) {
+
+                return redirect()->route('company.index')->withSuccess('Berhasil hapus');
+            } else {
+                echo "gagal";
+                exit;
+                return redirect()->route('company.index')->withErrors('Gagal Hapus');
+            }
+        } catch (Exception $exception) {
+            $this->db->rollback();
+            $message = $exception->getMessage();
+
+            return redirect()->route('company.index')->withErrors($message);
+        }
     }
 }

@@ -244,68 +244,42 @@ return [
 
         ['header' => 'Company'],
         [
-            'text' => 'List Company',
-            'url'  => 'company',
+            'text' => 'Company',
+
             'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'Add Company',
-            'url'  => 'company/create',
-            'icon' => 'fas fa-fw fa-lock',
-        ],
-        [
-            'text'    => 'multilevel',
-            'icon'    => 'fas fa-fw fa-share',
             'submenu' => [
                 [
-                    'text' => 'level_one',
-                    'url'  => '#',
+                    'text' => 'List Company',
+                    'url'  => 'company',
+                    'icon' => 'fas fa-fw fa-lock',
                 ],
                 [
-                    'text'    => 'level_one',
-                    'url'     => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'level_two',
-                            'url'  => '#',
-                        ],
-                        [
-                            'text'    => 'level_two',
-                            'url'     => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'level_three',
-                                    'url'  => '#',
-                                ],
-                                [
-                                    'text' => 'level_three',
-                                    'url'  => '#',
-                                ],
-                            ],
-                        ],
-                    ],
+                    'text' => 'Add Company',
+                    'url'  => 'company/create',
+                    'icon' => 'fas fa-fw fa-lock',
+                ],
+
+            ]
+        ],
+
+        ['header' => 'Employee'],
+        [
+            'text' => 'Employee',
+
+            'icon' => 'fas fa-fw fa-user',
+            'submenu' => [
+                [
+                    'text' => 'List Employee',
+                    'url'  => 'employee',
+                    'icon' => 'fas fa-fw fa-lock',
                 ],
                 [
-                    'text' => 'level_one',
-                    'url'  => '#',
+                    'text' => 'Add Employee',
+                    'url'  => 'employee/create',
+                    'icon' => 'fas fa-fw fa-lock',
                 ],
-            ],
-        ],
-        ['header' => 'labels'],
-        [
-            'text'       => 'important',
-            'icon_color' => 'red',
-            'url'        => '#',
-        ],
-        [
-            'text'       => 'warning',
-            'icon_color' => 'yellow',
-            'url'        => '#',
-        ],
-        [
-            'text'       => 'information',
-            'icon_color' => 'cyan',
-            'url'        => '#',
+
+            ]
         ],
     ],
 
