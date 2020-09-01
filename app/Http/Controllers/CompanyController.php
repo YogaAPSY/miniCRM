@@ -89,7 +89,8 @@ class CompanyController extends Controller
     public function show($id)
     {
         $companies = Company::findOrFail($id);
-        return view('companies.index', ['companies' => $companies]);
+
+        return view('companies.show', ['companies' => $companies]);
     }
 
     /**
@@ -153,13 +154,15 @@ class CompanyController extends Controller
      */
     public function destroy($id)
     {
+        $this->db->beginTransaction();
         try {
             $companies = Company::find($id);
             $companies->delete();
 
-            Storage::delete('public/images' . $companies->logo);
+            Storage::delete('public/images/' . $companies->logo);
             //     $file = $request->file('avatar')->store('avatars', 'public');
             //     $user->avatar = $file;
+            $this->db->commit();
             if ($companies) {
 
                 return redirect()->route('company.index')->withSuccess('Berhasil hapus');

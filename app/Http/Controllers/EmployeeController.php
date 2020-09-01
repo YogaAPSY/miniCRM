@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Company;
 use App\Employee;
+use App\Http\Requests\EmployeeStoreRequest;
 use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
 {
+    public function __construct()
+    {
+        $this->db = app('db');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +20,8 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        //
+        $companies = Employee::paginate(10);
+        return view('employees.index', ['employees' => $companies]);
     }
 
     /**
@@ -24,7 +31,8 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        //
+        $companies = Company::all();
+        return view('employees.form', ['companies' => $companies]);
     }
 
     /**
@@ -33,9 +41,31 @@ class EmployeeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(EmployeeStoreRequest $request)
     {
-        //
+
+
+        try {
+            $request->validated();
+
+
+            $employee = new Employee;
+
+            $employee->first_name = $request->input('first_name');
+            $employee->last_name = $request->input('last_name');
+            $employee->email = $request->input('email');
+            $employee->phone = $request->input('phone');
+
+            $employee->save();
+
+            $message = "employee berhasil di input";
+            return redirect()->route('employee.index')->withSuccess($message);
+        } catch (\Exception $exception) {
+
+            $message = $exception->getMessage();
+
+            return redirect()->route('employee.create')->withErrors($message);
+        }
     }
 
     /**

@@ -8,12 +8,12 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>List Company</h1>
+                <h1>List Employee</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">List Company</li>
+                    <li class="breadcrumb-item active">List Employe</li>
                 </ol>
             </div>
         </div>
@@ -41,7 +41,7 @@
                 <div class="card-header">
 
                     <div class="col-md-3">
-                        <a href="{{route("company.create")}}" class="btn btn-primary"><i class="fas fa-edit"> Tambah</i></a>
+                        <a href="{{route("employee.create")}}" class="btn btn-primary"><i class="fas fa-edit"> Tambah</i></a>
                     </div>
                     <div class="col-md-9">
 
@@ -56,7 +56,8 @@
                                 <th>No</th>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Logo</th>
+                                <th>Phone</th>
+                                <th>Company</th>
                                 <th>Created At</th>
                                 <th>Action</th>
                             </tr>
@@ -64,21 +65,21 @@
                         <tbody>
 
                             <?php $i = 1; ?>
-                            @forelse($companies as $company)
+                            @forelse($employees as $employee)
                             <tr>
 
                                 <td>{{$i++}}</td>
-                                <td>{{$company->name}}
+                                <td>{{$employee->name}}
                                 </td>
-                                <td>{{$company->email}}</td>
-                                <td><img src="{{ asset('storage/images/'.$company->logo)}}" alt="" width="70px" height="60px"></td>
-                                <td>{{$company->created_at}}</td>
+                                <td>{{$employee->email}}</td>
+                                <td><img src="{{ asset('storage/images/'.$employee->logo)}}" alt="" width="70px" height="60px"></td>
+                                <td>{{$employee->created_at}}</td>
                                 <td>
-                                    <a href="{{route("company.show", [$company->id])}}" class="btn btn-block bg-gradient-success"><i class="fas fa-eye"> Show</i></a>
+                                    <a href="{{route("employee.show", [$employee->id])}}" class="btn btn-block bg-gradient-success"><i class="fas fa-eye"> Show</i></a>
 
-                                    <a href="{{route("company.edit", [$company->id])}}" class="btn btn-block bg-gradient-primary"><i class="fas fa-edit"> Edit</i></a>
+                                    <a href="{{route("employee.edit", [$employee->id])}}" class="btn btn-block bg-gradient-primary"><i class="fas fa-edit"> Edit</i></a>
 
-                                    <form onsubmit="return confirm('Delete this company permanently?')" action="{{route('company.destroy', [$company->id])}}" method="POST">
+                                    <form onsubmit="return confirm('Delete this employee permanently?')" action="{{route('employee.destroy', [$employee->id])}}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-block bg-gradient-danger "><i class="fas fa-trash"> Delete</i></button>
@@ -87,13 +88,13 @@
                                 </td>
                             </tr>
                             @empty
-                            <p>No Data Company</p>
+                            <p>No Data employee</p>
                             @endforelse
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td colspan="6">
-                                    {!! $companies->appends(Request::all())->links() !!}
+                                    {!! $employees->appends(Request::all())->links() !!}
                                 </td>
                             </tr>
                         </tfoot>

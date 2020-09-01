@@ -20,7 +20,8 @@ Route::get('/', function () {
 
 Auth::routes(['register' => false]);
 
-Route::resource('company', 'CompanyController');
+Route::resource('company', 'CompanyController')->middleware('auth');
+Route::resource('employee', 'EmployeeController')->middleware('auth');
 
 Route::get('/home', function () {
     return view('home');
