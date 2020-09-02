@@ -72,7 +72,7 @@ class EmployeeController extends Controller
      */
     public function show($id)
     {
-        $employees = Employee::findOrFail($id);
+        $employees = Employee::with(['companies'])->where('id', $id)->first();
 
         return view('employees.show', ['employees' => $employees]);
     }

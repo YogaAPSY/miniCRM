@@ -24,7 +24,7 @@
     <!-- Default box -->
     <div class="card">
         <div class="card-header">
-            <h1 class="card-title"><strong>{{$companies->name}}</strong></h1>
+            <h1 class="card-title"><strong>{{$employees->first_name . " " . $employees->last_name }}</strong></h1>
 
             <div class="card-tools">
 
@@ -35,9 +35,11 @@
             </div>
         </div>
         <div class="card-body">
-            <img src="{{ asset('storage/images/'.$companies->logo)}}" alt="" width="200px" height="200px">
-            <p>Email : {{$companies->email}}</p>
-            <p>Created_at : {{$companies->created_at}}</p>
+
+            <p>Email : {{$employees->email}}</p>
+            <p>Phone : {{$employees->phone}}</p>
+            <p>Company : {{$employees->companies->name}}</p>
+            <p>Created_at : {{$employees->created_at}}</p>
         </div>
         <!-- /.card-body -->
         <div class="card-footer">

@@ -98,7 +98,7 @@
                     data: 'logo',
                     name: 'logo',
                     render: function(data, type, full, meta) {
-                        return "<img src=\"/storage/images/" + data + "\" height=\"50\"/>";
+                        return "<img src='<?= asset('storage/images/') ?>/" + data + "\' height=50px/>";
                     }
                 },
                 {
