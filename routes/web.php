@@ -23,6 +23,9 @@ Auth::routes(['register' => false]);
 Route::resource('company', 'CompanyController')->middleware('auth');
 Route::resource('employee', 'EmployeeController')->middleware('auth');
 
+Route::get('lang/{language}', 'LocalizationController@switch')->name('localization.switch');
+
 Route::get('/home', function () {
+
     return view('home');
 })->name('home')->middleware('auth');

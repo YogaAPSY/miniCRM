@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CompanyEditRequest extends FormRequest
@@ -25,7 +26,7 @@ class CompanyEditRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:50',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email|unique:employees,email', Rule::unique('companies' . 'email')->ignore($this->company),
             'logo' => 'required|min:100',
         ];
     }

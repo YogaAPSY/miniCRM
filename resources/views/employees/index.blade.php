@@ -50,7 +50,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="example2" class="table table-bordered table-hover">
+                    <table id="employees-table" class="table table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -69,10 +69,12 @@
                             <tr>
 
                                 <td>{{$i++}}</td>
-                                <td>{{$employee->name}}
+                                <td>{{$employee->first_name . " " . $employee->last_name}}
                                 </td>
                                 <td>{{$employee->email}}</td>
-                                <td><img src="{{ asset('storage/images/'.$employee->logo)}}" alt="" width="70px" height="60px"></td>
+                                <td>{{$employee->phone}}</td>
+                                <td>{{$employee->companies->name}}</td>
+
                                 <td>{{$employee->created_at}}</td>
                                 <td>
                                     <a href="{{route("employee.show", [$employee->id])}}" class="btn btn-block bg-gradient-success"><i class="fas fa-eye"> Show</i></a>
@@ -91,13 +93,7 @@
                             <p>No Data employee</p>
                             @endforelse
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="6">
-                                    {!! $employees->appends(Request::all())->links() !!}
-                                </td>
-                            </tr>
-                        </tfoot>
+
                     </table>
                 </div> <!-- /.card-body -->
             </div>
@@ -109,4 +105,16 @@
     <!-- /.row -->
 </section>
 <!-- /.content -->
+
+@Push('js')
+<script>
+    $(function() {
+        $('#employees-table').DataTable({
+            processing: true,
+            serverSide: false,
+
+        });
+    });
+</script>
+@endpush
 @stop

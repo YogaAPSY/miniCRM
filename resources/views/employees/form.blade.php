@@ -26,10 +26,10 @@
     <!-- form start -->
     @if(isset($employees))
 
-    <form action="{{route('company.update', [$employees->id])}}" method="POST" role="form" enctype="multipart/form-data">
+    <form action="{{route('employee.update', [$employees->id])}}" method="POST" role="form" enctype="multipart/form-data">
         <input type="hidden" value="PUT" name="_method">
         @else
-        <form action="{{route("company.store")}}" method="POST" role="form" enctype="multipart/form-data">
+        <form action="{{route("employee.store")}}" method="POST" role="form" enctype="multipart/form-data">
             @endif
 
 
@@ -55,7 +55,11 @@
                     <select name="company_id" id="" class="form-control">
                         <option value="" disabled selected="">-- Choose Company --</option>
                         @forelse($companies as $company)
+                        @if($company->id == isset($employees->company_id))
+                        <option value="{{$company->id}}" selected>{{$company->name}}</option>
+                        @else
                         <option value="{{$company->id}}">{{$company->name}}</option>
+                        @endif
                         @empty
                         <option value="" disabled>-- Belum ada company --</option>
                         @endforelse

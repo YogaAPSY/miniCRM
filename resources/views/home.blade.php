@@ -7,14 +7,8 @@
 @stop
 
 @section('content')
-@if (session('status'))
-<div class="alert alert-success" role="alert">
-    {{ session('status') }}
-</div>
-@endif
+<h1>{{ __('home.welcome') }}</h1>
 
-You are logged in!
-<p>Welcome to this beautiful admin panel.</p>
 @stop
 
 @section('css')

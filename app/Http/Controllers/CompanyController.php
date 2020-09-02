@@ -6,6 +6,7 @@ use Exception;
 use App\Company;
 use Illuminate\Http\Request;
 
+use Yajra\DataTables\DataTables;
 use App\Mail\NewCompanyNotification;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -26,10 +27,21 @@ class CompanyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $companies = Company::paginate(10);
-        return view('companies.index', ['companies' => $companies]);
+        if ($request->ajax()) {
+            $data = Company::latest()->get();
+
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+
+                    return view('companies.action', ['row' => $row])->render();
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+        return view('companies.index');
     }
 
     /**
@@ -133,8 +145,6 @@ class CompanyController extends Controller
 
             $company->save();
 
-            Mail::to('testera330@gmail.com')->send(new NewCompanyNotification(['name' => $request->input('name')]));
-
             $this->db->commit();
             $message = "Company berhasil di input";
             return redirect()->route('company.index')->withSuccess($message);
@@ -167,8 +177,7 @@ class CompanyController extends Controller
 
                 return redirect()->route('company.index')->withSuccess('Berhasil hapus');
             } else {
-                echo "gagal";
-                exit;
+
                 return redirect()->route('company.index')->withErrors('Gagal Hapus');
             }
         } catch (Exception $exception) {

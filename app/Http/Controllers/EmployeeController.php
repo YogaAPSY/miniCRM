@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Company;
 use App\Employee;
-use App\Http\Requests\EmployeeStoreRequest;
 use Illuminate\Http\Request;
+use App\Http\Requests\EmployeeEditRequest;
+use App\Http\Requests\EmployeeStoreRequest;
 
 class EmployeeController extends Controller
 {
@@ -20,7 +21,10 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $companies = Employee::paginate(10);
+
+
+        $companies = Employee::with(['companies'])->paginate(10);
+
         return view('employees.index', ['employees' => $companies]);
     }
 
@@ -44,28 +48,20 @@ class EmployeeController extends Controller
     public function store(EmployeeStoreRequest $request)
     {
 
+        $request->validated();
 
-        try {
-            $request->validated();
+        $employee = new Employee;
 
+        $employee->first_name = $request->input('first_name');
+        $employee->last_name = $request->input('last_name');
+        $employee->email = $request->input('email');
+        $employee->phone = $request->input('phone');
+        $employee->company_id = $request->input('company_id');
 
-            $employee = new Employee;
+        $employee->save();
 
-            $employee->first_name = $request->input('first_name');
-            $employee->last_name = $request->input('last_name');
-            $employee->email = $request->input('email');
-            $employee->phone = $request->input('phone');
-
-            $employee->save();
-
-            $message = "employee berhasil di input";
-            return redirect()->route('employee.index')->withSuccess($message);
-        } catch (\Exception $exception) {
-
-            $message = $exception->getMessage();
-
-            return redirect()->route('employee.create')->withErrors($message);
-        }
+        $message = "employee berhasil di input";
+        return redirect()->route('employee.index')->withSuccess($message);
     }
 
     /**
@@ -74,9 +70,11 @@ class EmployeeController extends Controller
      * @param  \App\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function show(Employee $employee)
+    public function show($id)
     {
-        //
+        $employees = Employee::findOrFail($id);
+
+        return view('employees.show', ['employees' => $employees]);
     }
 
     /**
@@ -85,9 +83,11 @@ class EmployeeController extends Controller
      * @param  \App\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function edit(Employee $employee)
+    public function edit($id)
     {
-        //
+        $companies = Company::all();
+        $employees = Employee::findOrFail($id);
+        return view('employees.form', ['employees' => $employees, 'companies' => $companies]);
     }
 
     /**
@@ -97,9 +97,23 @@ class EmployeeController extends Controller
      * @param  \App\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Employee $employee)
+    public function update(EmployeeEditRequest $request, $id)
     {
-        //
+
+        $request->validated();
+
+        // $employee = Employee::create($request->all())->where('id', $id);
+        $employee = Employee::findOrFail($id);
+        $employee->first_name = $request->input('first_name');
+        $employee->last_name = $request->input('last_name');
+        $employee->email = $request->input('email');
+        $employee->phone = $request->input('phone');
+        $employee->company_id = $request->input('company_id');
+
+        $employee->save();
+
+        $message = "employee berhasil di Edit";
+        return redirect()->route('employee.index')->withSuccess($message);
     }
 
     /**
@@ -108,8 +122,17 @@ class EmployeeController extends Controller
      * @param  \App\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Employee $employee)
+    public function destroy($id)
     {
-        //
+        $employees = Employee::find($id);
+        $employees->delete();
+
+        if ($employees) {
+
+            return redirect()->route('employee.index')->withSuccess('Berhasil hapus');
+        } else {
+
+            return redirect()->route('employee.index')->withErrors('Gagal Hapus');
+        }
     }
 }

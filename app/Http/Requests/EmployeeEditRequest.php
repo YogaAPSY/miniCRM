@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class EmployeeStoreRequest extends FormRequest
+class EmployeeEditRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,6 +24,7 @@ class EmployeeStoreRequest extends FormRequest
      */
     public function rules()
     {
+
         return [
             'first_name' => 'required|string|max:50',
 

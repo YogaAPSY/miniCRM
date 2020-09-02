@@ -11,16 +11,16 @@ class Company extends Model
 
     protected $fillable = ['name, email, logo'];
 
-    protected static function boot()
-    {
-        parent::boot();
+    // protected static function boot()
+    // {
+    //     parent::boot();
 
-        static::deleting(function ($companies) {
-            foreach ($companies->Employees()->get() as $comapnies) {
-                $companies->delete();
-            }
-        });
-    }
+    //     static::deleting(function ($companies) {
+    //         foreach ($companies->Employees()->get() as $comapnies) {
+    //             $companies->delete();
+    //         }
+    //     });
+    // }
 
 
     public function Employees()

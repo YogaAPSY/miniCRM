@@ -50,7 +50,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="example2" class="table table-bordered table-hover">
+                    <table id="users-table" class="table table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -61,42 +61,7 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
 
-                            <?php $i = 1; ?>
-                            @forelse($companies as $company)
-                            <tr>
-
-                                <td>{{$i++}}</td>
-                                <td>{{$company->name}}
-                                </td>
-                                <td>{{$company->email}}</td>
-                                <td><img src="{{ asset('storage/images/'.$company->logo)}}" alt="" width="70px" height="60px"></td>
-                                <td>{{$company->created_at}}</td>
-                                <td>
-                                    <a href="{{route("company.show", [$company->id])}}" class="btn btn-block bg-gradient-success"><i class="fas fa-eye"> Show</i></a>
-
-                                    <a href="{{route("company.edit", [$company->id])}}" class="btn btn-block bg-gradient-primary"><i class="fas fa-edit"> Edit</i></a>
-
-                                    <form onsubmit="return confirm('Delete this company permanently?')" action="{{route('company.destroy', [$company->id])}}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-block bg-gradient-danger "><i class="fas fa-trash"> Delete</i></button>
-                                    </form>
-
-                                </td>
-                            </tr>
-                            @empty
-                            <p>No Data Company</p>
-                            @endforelse
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="6">
-                                    {!! $companies->appends(Request::all())->links() !!}
-                                </td>
-                            </tr>
-                        </tfoot>
                     </table>
                 </div> <!-- /.card-body -->
             </div>
@@ -108,4 +73,47 @@
     <!-- /.row -->
 </section>
 <!-- /.content -->
+
+
+@Push('js')
+<script>
+    $(function() {
+        $('#users-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: 'company',
+            columns: [{
+                    data: 'id',
+                    name: 'no'
+                },
+                {
+                    data: 'name',
+                    name: 'name'
+                },
+                {
+                    data: 'email',
+                    name: 'email'
+                },
+                {
+                    data: 'logo',
+                    name: 'logo',
+                    render: function(data, type, full, meta) {
+                        return "<img src=\"/storage/images/" + data + "\" height=\"50\"/>";
+                    }
+                },
+                {
+                    data: 'created_at',
+                    name: 'created_at'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                },
+            ]
+        });
+    });
+</script>
+@endpush
 @stop
